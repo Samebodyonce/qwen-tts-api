@@ -27,14 +27,17 @@ gpu_semaphore: asyncio.Semaphore = asyncio.Semaphore(int(os.environ.get("MAX_CON
 CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "*").split(",")
 
 
+MODEL_PATH = os.environ.get("MODEL_PATH", "models/Qwen3-TTS-12Hz-0.6B-Base")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global model
-    logger.info("Loading Qwen3-TTS model...")
+    logger.info("Loading Qwen3-TTS model from %s ...", MODEL_PATH)
     attn = "flash_attention_2"
     try:
         model = Qwen3TTSModel.from_pretrained(
-            "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+            MODEL_PATH,
             dtype=torch.bfloat16,
             device_map="cuda:0",
             attn_implementation=attn,
@@ -43,7 +46,7 @@ async def lifespan(app: FastAPI):
     except Exception:
         logger.info("flash_attention_2 unavailable, falling back to sdpa")
         model = Qwen3TTSModel.from_pretrained(
-            "Qwen/Qwen3-TTS-12Hz-0.6B-Base",
+            MODEL_PATH,
             dtype=torch.bfloat16,
             device_map="cuda:0",
             attn_implementation="sdpa",
