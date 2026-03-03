@@ -14,13 +14,20 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir numpy typing_extensions && pip install --no-cache-dir -r requirements.txt
 
 COPY app.py .
+COPY voices.yaml .
+
+# Reference audio files for voice cloning (if bundled into image)
+# To use external voices, mount them: -v /path/to/voices:/app/voices
+COPY voices/ /app/voices/
 
 # Models should be mounted or copied into /app/models/
 # e.g. docker run -v /path/to/models:/app/models ...
 # or uncomment to bake them in:
 # COPY models/ /app/models/
 
-ENV MODEL_PATH=/app/models/Qwen3-TTS-12Hz-0.6B-Base
+ENV MODEL_PATH_0_6B=/app/models/Qwen3-TTS-12Hz-0.6B-Base
+ENV MODEL_PATH_1_6B=/app/models/Qwen3-TTS-25Hz-1.5B-Base
+ENV VOICES_CONFIG=/app/voices.yaml
 
 EXPOSE 8000
 

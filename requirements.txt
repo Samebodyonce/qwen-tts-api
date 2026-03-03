@@ -3,4 +3,6 @@ uvicorn[standard]
 qwen-tts
 torch
 soundfile
-python-multipart
+httpx
+scipy
+pyyaml

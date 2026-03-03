@@ -1,0 +1,14 @@
+voices:
+  Victor:
+    backend: elevenlabs
+    voice_id: "ELEVENLABS_VOICE_ID"
+
+  Nargiz:
+    backend: qwen_1_6b
+    ref_audio: voices/nargiz_ref.wav
+    ref_text: "Эталонный текст голоса"
+
+  Victor_2:
+    backend: qwen_0_6b
+    ref_audio: voices/victor2_ref.wav
+    ref_text: "Эталонный текст голоса"
