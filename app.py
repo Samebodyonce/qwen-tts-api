@@ -71,7 +71,6 @@ app.add_middleware(
 
 class TTSRequest(BaseModel):
     text: str
-    language: str = "English"
     ref_audio_url: Optional[str] = None
     ref_audio_base64: Optional[str] = None
     ref_text: str = ""
@@ -79,7 +78,6 @@ class TTSRequest(BaseModel):
 
 class VoiceTTSRequest(BaseModel):
     text: str
-    language: str = "English"
 
 
 class VoiceCreateRequest(BaseModel):
@@ -153,7 +151,7 @@ async def tts_json(req: TTSRequest):
     async with gpu_semaphore:
         try:
             wav_bytes = await asyncio.to_thread(
-                _synthesize, req.text, req.language, ref_audio, req.ref_text
+                _synthesize, req.text, "Russian", ref_audio, req.ref_text
             )
         except Exception as e:
             logger.exception("TTS inference failed")
@@ -165,7 +163,6 @@ async def tts_json(req: TTSRequest):
 @app.post("/v1/tts/upload")
 async def tts_upload(
     text: str = Form(...),
-    language: str = Form("English"),
     ref_text: str = Form(""),
     ref_audio: UploadFile = File(...),
 ):
@@ -175,7 +172,7 @@ async def tts_upload(
     async with gpu_semaphore:
         try:
             wav_bytes = await asyncio.to_thread(
-                _synthesize, text, language, ref_path, ref_text
+                _synthesize, text, "Russian", ref_path, ref_text
             )
         except Exception as e:
             logger.exception("TTS inference failed")
@@ -235,7 +232,7 @@ async def tts_with_voice(voice_id: str, req: VoiceTTSRequest):
     async with gpu_semaphore:
         try:
             wav_bytes = await asyncio.to_thread(
-                _synthesize_with_prompt, req.text, req.language, prompt
+                _synthesize_with_prompt, req.text, "Russian", prompt
             )
         except Exception as e:
             logger.exception("TTS inference failed")
